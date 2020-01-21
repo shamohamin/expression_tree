@@ -2,6 +2,9 @@
 #include <vector>
 #include <fstream>
 #include <string.h>
+#include <GL/gl.h>
+#include <GL/glut.h>
+#include <GL/glu.h>
 #include "header.h"
 #include <ctype.h>
 using namespace std ;
@@ -9,19 +12,30 @@ using namespace std ;
 
 vector<node *> char_holder ;
 
-void reading_from_file() ;
+void reading_from_file();
 int count(char c,vector<string> &hold_lines);
 void char_counter(vector<string> &hold_lines);
 bool check_char(char) ;
-extern int compress() ;
+extern node * compress() ;
+void display();
+extern void display_tree(node *root , float x , float y ,float vgap , float hgap);
+node *root ;
 
+void setup() {   glClearColor(1.0f, 1.0f, 1.0f, 1.0f); }
 
-int main(){
+int main(int argc , char *argv[]){
+
+    glutInit(&argc, argv);
+    glutInitDisplayMode(GLUT_RGB | GLUT_DEPTH | GLUT_DOUBLE);
+    glutInitWindowSize(2000,2000);
+    glutCreateWindow("Huffman Tree");
+
     reading_from_file() ;
-    compress() ;
-    // for(int i = 0 ; i < char_holder.size() ; i++)
-    //     cout << "the char is : " << char_holder.at(i)->c << " the freq is : " << char_holder.at(i)->freq << endl;
-    
+    ::root = compress() ;
+
+    setup();
+    glutDisplayFunc(display);
+    glutMainLoop();
     return 0;
 }
 
@@ -74,4 +88,15 @@ bool check_char(char c){
         if(char_holder.at(i)->c[0] == c)
             return false ;
     return true ;
+}
+
+void display(){
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    glColor3f(1.0f, 0.0f, 0.0f);
+    glEnableClientState(GL_VERTEX_ARRAY);
+
+    display_tree(::root , 0.05 ,0.9 , 0.4 , 0.4) ;
+
+    glDisableClientState(GL_VERTEX_ARRAY);
+    glutSwapBuffers();
 }
