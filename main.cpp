@@ -36,7 +36,7 @@ int main(int argc , char *argv[]){
     ::root = compress() ;
     try{
         decompressed() ;
-    }catch(char const *e){
+    }catch(const char *e){
         cout << e ;
     }
         

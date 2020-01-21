@@ -7,11 +7,12 @@
 #include <iterator>
 using namespace std ;
 
-map <char , string> _code_map ;
+map <string , char> _code_map ;
 vector<string> _line_holder;
 
 void read_file();
 void make_map(string) ;
+void make_decompressed_file(string line , ofstream &file);
 
 
 void decompressed(){
@@ -21,12 +22,15 @@ void decompressed(){
     }catch(const char *e){
         cout << e ;
     }
-    
+        
+    ofstream file ("decompressed.txt") ;
+    if(file.is_open())
+        for(int i = 0 ; i < _line_holder.size() ; i++)
+            make_decompressed_file(_line_holder.at(i) , file) , file << endl ;
+    else
+        throw "file is crrupted !!!!!!!!!!!!!!!!";
 
-    map<char , string >::iterator itr ;
-    for(itr = _code_map.begin() ; itr != _code_map.end() ; itr++)
-        cout << itr->first << "  code is : " << itr->second << endl ;
-    
+    file.close();
 
 }
 
@@ -54,10 +58,20 @@ void make_map(string line){
     for(int i = 2 ; i < line.length() ; i++)
         code_str += line.at(i) ;
     
-    _code_map.insert(pair<char , string>(_char , code_str)) ;
+    _code_map.insert(pair<string , char>(code_str , _char)) ;
             
 }
 
-void make_decompressed_file(){
-    
+void make_decompressed_file(string line , ofstream &file){
+    int pos = 0;
+    string str = "" ;
+    auto itr = _code_map.find("");
+ 
+    for(int i = 0 ; i < line.length() ; i++)
+        if(line.at(i) == ' '){
+            str = "" ;
+            for(int k = pos ; k < i ; k++)
+                str += line.at(k) ;
+            itr = _code_map.find(str) , file << itr->second , pos = i + 1;
+        }
 }
