@@ -5,6 +5,8 @@
 #include <iterator>
 #include <ctype.h>
 #include <string.h>
+#include <fstream>
+#include <ostream>
 using namespace std;
 
 struct char_freq ;
@@ -16,6 +18,9 @@ void sort(vector<node> &hold);
 void min_heapify(vector<node *> &arr , int size , int i);
 void parrent_heapify(vector<node *> &arr , int size , int i);
 void appoint_code(node * , int [] , int );
+void make_compress_file();
+void convert_char_to_code(string , ofstream &) ;
+
 
 node *compress(){    
     
@@ -53,10 +58,8 @@ node *compress(){
     int arr[100000] ;
     appoint_code(root , arr , 0) ;
 
-    map<string,char *>::iterator itr ;
-    for(itr = code_map.begin() ; itr != code_map.end() ; itr++)
-        cout << itr->first << " code is : " << itr->second << endl ;
-    
+    make_compress_file() ;
+
     return root ;
 }
 
@@ -96,4 +99,40 @@ void appoint_code(node *root , int arr[] , int index){
         code_map.insert(pair<string , char *>(root->c , root->code)) ;
     }
     
+}
+
+void put_header(ofstream &myfile){
+    
+    map<string , char *>::iterator itr ;
+    for(itr = code_map.begin() ; itr != code_map.end() ; itr++)
+        myfile << itr->first << " " << itr->second << endl ;
+        
+}
+
+void make_compress_file(){
+    ofstream compress_file("compressed.txt");
+    put_header(compress_file) ;
+    string line;
+    vector<string> hold_lines ;
+
+    ifstream myfile ("text.txt") ;
+
+    if (myfile.is_open())
+        while (getline (myfile,line))
+            convert_char_to_code(line , compress_file) ;
+    else
+        cout << "Unable to open file"; 
+
+    myfile.close();
+    compress_file.close() ;    
+}
+
+void convert_char_to_code(string line , ofstream &file){
+    for(int i = 0 ; i < line.length() ; i++){
+        string str = "" ;
+        str += line.at(i) ;
+        auto itr = code_map.find(str) ;
+        file << itr->second << " ";
+    }
+    file << endl ;
 }

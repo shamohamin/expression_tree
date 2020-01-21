@@ -20,6 +20,8 @@ extern node * compress() ;
 void display();
 extern void display_tree(node *root , float x , float y ,float vgap , float hgap);
 node *root ;
+extern void decompressed() ;
+
 
 void setup() {   glClearColor(1.0f, 1.0f, 1.0f, 1.0f); }
 
@@ -32,6 +34,13 @@ int main(int argc , char *argv[]){
 
     reading_from_file() ;
     ::root = compress() ;
+    try{
+        decompressed() ;
+    }catch(char const *e){
+        cout << e ;
+    }
+        
+
 
     setup();
     glutDisplayFunc(display);
@@ -43,11 +52,11 @@ void reading_from_file(){
     string line;
     vector<string> hold_lines ;
 
-    ifstream myfile ("text.txt");
+    ifstream myfile ("text.txt") ;
 
     if (myfile.is_open())
         while ( getline (myfile,line))
-            hold_lines.push_back(line) ;
+            cout << line << endl, hold_lines.push_back(line) ;
     else
         cout << "Unable to open file"; 
 
@@ -60,6 +69,7 @@ void char_counter(vector<string> &hold_lines){
         string line = hold_lines.at(i) ;
         for(int j = 0 ; j < line.length() ; j++){
             if(line.at(j) != '_' && check_char(line.at(j))){
+                // cout << "hell o " ;
                 int counter = count(line.at(j) , hold_lines) ;
                 string str = "" ;
                 str += line.at(j) ;
