@@ -33,12 +33,16 @@ int main(int argc , char *argv[]){
     glutCreateWindow("Huffman Tree");
 
     reading_from_file() ;
+    for(int i = 0 ; i < char_holder.size() ; i++)
+        cout << char_holder.at(i)->c << " count is : " << char_holder.at(i)->freq << endl;
+    // ::root = (struct node *)malloc(sizeof(struct node));
     ::root = compress() ;
-    try{
-        decompressed() ;
-    }catch(const char *e){
-        cout << e ;
-    }
+
+    // try{
+        // decompressed() ;
+    // }catch(const char *e){
+        // cout << e ;
+    // }
         
 
 
@@ -68,8 +72,8 @@ void char_counter(vector<string> &hold_lines){
     for(int i = 0 ; i < hold_lines.size() ; i++){
         string line = hold_lines.at(i) ;
         for(int j = 0 ; j < line.length() ; j++){
-            if(line.at(j) != '_' && check_char(line.at(j))){
-                // cout << "hell o " ;
+            if(check_char(line.at(j))){
+                cout << "hell o " << endl ;
                 int counter = count(line.at(j) , hold_lines) ;
                 string str = "" ;
                 str += line.at(j) ;
@@ -86,8 +90,8 @@ int count(char c,vector<string> &hold_lines){
     for(int i = 0 ; i < hold_lines.size() ; i++){
         char *line = &(hold_lines.at(i).at(0)) ;
         for(;*line != '\0' ; line++)
-            if(c == *line && *line != '_')
-                count++ , *line = '_' ;
+            if(c == *line)
+                count++ ;
     }
 
     return count ;

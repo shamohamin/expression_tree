@@ -14,12 +14,12 @@ struct node ;
 extern vector<node *> char_holder ;
 map<string , char *> code_map;
 
-void sort(vector<node> &hold);
 void min_heapify(vector<node *> &arr , int size , int i);
 void parrent_heapify(vector<node *> &arr , int size , int i);
-void appoint_code(node * , int [] , int );
+void appoint_code(node *& , int [] , int );
 void make_compress_file();
 void convert_char_to_code(string , ofstream &) ;
+bool check_the_chars(char c);
 
 
 node *compress(){    
@@ -40,8 +40,8 @@ node *compress(){
 
         node *right = hold[0] ;
         hold.erase(hold.begin() , hold.begin() + 1) ;
-        it = hold.back() ; 
-        hold.insert(hold.begin() , it) ;
+        node * it2 = hold.back() ; 
+        hold.insert(hold.begin() , it2) ;
         hold.pop_back() ;
         min_heapify(hold , hold.size() , 0);
 
@@ -54,9 +54,22 @@ node *compress(){
         
     }
 
-    node * root = hold.front() ;
-    int arr[100000] ;
-    appoint_code(root , arr , 0) ;
+    // cout << "hello" ;
+    // exit(1);
+
+    node * root = (struct node *)malloc(sizeof(struct node)) ;
+    root = hold.front() ;
+    int arr[10000] ;
+    
+    // cout << hold.size() << "wad" ;
+    // exit(1);
+    appoint_code(hold.front() , arr , 0) ;
+    map<string , char*>::iterator it;
+
+    for(it = code_map.begin() ; it != code_map.end() ; it++)
+        cout << it->first << " last is :" << it->second << endl ;
+    // exit(1);
+    
 
     make_compress_file() ;
 
@@ -83,22 +96,43 @@ void parrent_heapify(vector<node *> &arr , int size , int i){
         swap(arr[parrent] , arr[i]) , parrent_heapify(arr , size , parrent) ;
 }
 
-void appoint_code(node *root , int arr[] , int index){
+void appoint_code(node *&root , int arr[] , int index){
     if(root->left)
         arr[index] = 0 , appoint_code(root->left , arr , index + 1) ;
     if(root->right)
-        arr[index] = 1 , appoint_code(root->right , arr , index+1) ;
+        arr[index] = 1 , appoint_code(root->right , arr , index + 1) ;
     
-    string str = "";
-    if(root->left == nullptr && root->right == nullptr){
+    
+    if(!(root->left) && !(root->right) && check_the_chars(root->c.at(0))){
+        string str = "";
         for (int i = 0; i < index; i++)
             str += to_string(arr[i]) ;
 
-        strcpy(root->code , &str.at(0)) ;
+        for(int i = 0 ; i < index ;i++)
+            root->code[i] = str.at(i) ;
 
-        code_map.insert(pair<string , char *>(root->c , root->code)) ;
+        root->code[index] = '\0';
+        root->num = index ;
+        // cout << "hello" ;
+        // exit(1);
+        // str = "" ;
+        // strcpy(root->code , &(str.at(0)));
+        if(check_the_chars(root->c.at(0)))
+            code_map.insert(pair<string , char *>(root->c , root->code)) ;
+        
+        // cout << "hello" ;
+        // exit(1);
     }
     
+}
+
+bool check_the_chars(char c){
+    string str = "" ;
+    str += c ;
+    auto itr = code_map.find(str);
+
+    return itr == code_map.end() ? true : false ;
+
 }
 
 void put_header(ofstream &myfile){

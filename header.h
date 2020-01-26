@@ -15,7 +15,8 @@ struct node
     node *right ;
     std::string c ;
     int freq ;
-    char code[] ;
+    char code[10000] ;
+    int num ;
     node(std::string data , int freq ):c(data) , freq(freq)
         , left(nullptr) , right(nullptr){};
     node(){} ;
