@@ -16,13 +16,13 @@ map<string , char *> code_map;
 
 void min_heapify(vector<node *> &arr , int size , int i);
 void parrent_heapify(vector<node *> &arr , int size , int i);
-void appoint_code(node *& , int [] , int );
+void appoint_code(node *& , int [] , int , int &);
 void make_compress_file();
 void convert_char_to_code(string , ofstream &) ;
 bool check_the_chars(char c);
 
 
-node *compress(){    
+node *compress(int &size_of_all_bits , int &sum_of_compressed_file){    
     
     vector<node *> hold ;
     copy(char_holder.begin() , char_holder.end() , back_inserter(hold)) ;
@@ -54,24 +54,14 @@ node *compress(){
         
     }
 
-    // cout << "hello" ;
-    // exit(1);
-
     node * root = (struct node *)malloc(sizeof(struct node)) ;
     root = hold.front() ;
     int arr[10000] ;
     
-    // cout << hold.size() << "wad" ;
-    // exit(1);
-    appoint_code(hold.front() , arr , 0) ;
-    map<string , char*>::iterator it;
-
-    for(it = code_map.begin() ; it != code_map.end() ; it++)
-        cout << it->first << " last is :" << it->second << endl ;
-    // exit(1);
-    
+    appoint_code(hold.front() , arr , 0 ,  sum_of_compressed_file) ;
 
     make_compress_file() ;
+    size_of_all_bits = root->freq ;
 
     return root ;
 }
@@ -96,11 +86,11 @@ void parrent_heapify(vector<node *> &arr , int size , int i){
         swap(arr[parrent] , arr[i]) , parrent_heapify(arr , size , parrent) ;
 }
 
-void appoint_code(node *&root , int arr[] , int index){
+void appoint_code(node *&root , int arr[] , int index , int &sum_of_compressed_file){
     if(root->left)
-        arr[index] = 0 , appoint_code(root->left , arr , index + 1) ;
+        arr[index] = 0 , appoint_code(root->left , arr , index + 1 , sum_of_compressed_file) ;
     if(root->right)
-        arr[index] = 1 , appoint_code(root->right , arr , index + 1) ;
+        arr[index] = 1 , appoint_code(root->right , arr , index + 1 , sum_of_compressed_file) ;
     
     
     if(!(root->left) && !(root->right) && check_the_chars(root->c.at(0))){
@@ -113,15 +103,11 @@ void appoint_code(node *&root , int arr[] , int index){
 
         root->code[index] = '\0';
         root->num = index ;
-        // cout << "hello" ;
-        // exit(1);
-        // str = "" ;
-        // strcpy(root->code , &(str.at(0)));
-        if(check_the_chars(root->c.at(0)))
-            code_map.insert(pair<string , char *>(root->c , root->code)) ;
+        int hold = index * root->freq ;
+        sum_of_compressed_file += hold ;
+    
+        code_map.insert(pair<string , char *>(root->c , root->code)) ;
         
-        // cout << "hello" ;
-        // exit(1);
     }
     
 }

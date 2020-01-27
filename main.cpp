@@ -16,14 +16,14 @@ void reading_from_file();
 int count(char c,vector<string> &hold_lines);
 void char_counter(vector<string> &hold_lines);
 bool check_char(char) ;
-extern node * compress() ;
+extern node * compress(int & , int &) ;
 void display();
 extern void display_tree(node *root , float x , float y ,float vgap , float hgap);
 node *root ;
 extern void decompressed() ;
 
 
-void setup() {   glClearColor(1.0f, 1.0f, 1.0f, 1.0f); }
+void setup() {   glClearColor(1.0f, 1.0f, 1.0f, 1.0f) ; }
 
 int main(int argc , char *argv[]){
 
@@ -33,16 +33,21 @@ int main(int argc , char *argv[]){
     glutCreateWindow("Huffman Tree");
 
     reading_from_file() ;
-    for(int i = 0 ; i < char_holder.size() ; i++)
-        cout << char_holder.at(i)->c << " count is : " << char_holder.at(i)->freq << endl;
-    // ::root = (struct node *)malloc(sizeof(struct node));
-    ::root = compress() ;
+    int size_of_total = 0 ;
+    int size_of_compressed_file = 0 ;
+    ::root = compress(size_of_total , size_of_compressed_file) ;
+    size_of_total *= 8 ;
+    cout << size_of_total << " size of all the bits" << endl ;
+    cout << size_of_compressed_file << " size of comprssed FILE" << endl ;
+    
+    double precent = (double)size_of_compressed_file / (double)size_of_total ;
+    cout << precent << endl ;
 
-    // try{
-        // decompressed() ;
-    // }catch(const char *e){
-        // cout << e ;
-    // }
+    try{
+        decompressed() ;
+    }catch(const char *e){
+        cout << e ;
+    }
         
 
 
@@ -60,7 +65,7 @@ void reading_from_file(){
 
     if (myfile.is_open())
         while ( getline (myfile,line))
-            cout << line << endl, hold_lines.push_back(line) ;
+            hold_lines.push_back(line) ;
     else
         cout << "Unable to open file"; 
 
@@ -73,7 +78,6 @@ void char_counter(vector<string> &hold_lines){
         string line = hold_lines.at(i) ;
         for(int j = 0 ; j < line.length() ; j++){
             if(check_char(line.at(j))){
-                cout << "hell o " << endl ;
                 int counter = count(line.at(j) , hold_lines) ;
                 string str = "" ;
                 str += line.at(j) ;
@@ -109,7 +113,7 @@ void display(){
     glColor3f(1.0f, 0.0f, 0.0f);
     glEnableClientState(GL_VERTEX_ARRAY);
 
-    display_tree(::root , 0.05 ,0.9 , 0.4 , 0.4) ;
+    // display_tree(::root , 0.05 ,0.9 , 0.4 , 0.4) ;
 
     glDisableClientState(GL_VERTEX_ARRAY);
     glutSwapBuffers();

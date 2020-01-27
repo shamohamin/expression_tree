@@ -23,5 +23,4 @@ struct node
 };
 
 
-
 #endif
