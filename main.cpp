@@ -11,6 +11,7 @@ using namespace std ;
 
 
 vector<node *> char_holder ;
+string input_file ;
 
 void reading_from_file();
 int count(char c,vector<string> &hold_lines);
@@ -27,10 +28,16 @@ void setup() {   glClearColor(1.0f, 1.0f, 1.0f, 1.0f) ; }
 
 int main(int argc , char *argv[]){
 
-    glutInit(&argc, argv);
-    glutInitDisplayMode(GLUT_RGB | GLUT_DEPTH | GLUT_DOUBLE);
-    glutInitWindowSize(2000,2000);
-    glutCreateWindow("Huffman Tree");
+    // glutInit(&argc, argv);
+    // glutInitDisplayMode(GLUT_RGB | GLUT_DEPTH | GLUT_DOUBLE);
+    // glutInitWindowSize(2000,2000);
+    // glutCreateWindow("Huffman Tree");
+
+    char *hold = &argv[1][0] ;
+    for(;*hold != '\0';hold++)
+        input_file += *hold ;
+
+    input_file += ".txt" ;
 
     reading_from_file() ;
     int size_of_total = 0 ;
@@ -41,7 +48,7 @@ int main(int argc , char *argv[]){
     cout << size_of_compressed_file << " size of comprssed FILE" << endl ;
     
     double precent = (double)size_of_compressed_file / (double)size_of_total ;
-    cout << precent << endl ;
+    cout << "precent is : " << precent << endl ;
 
     try{
         decompressed() ;
@@ -51,17 +58,17 @@ int main(int argc , char *argv[]){
         
 
 
-    setup();
-    glutDisplayFunc(display);
-    glutMainLoop();
+    // setup();
+    // glutDisplayFunc(display);
+    // glutMainLoop();
     return 0;
 }
 
 void reading_from_file(){
     string line;
     vector<string> hold_lines ;
-
-    ifstream myfile ("text.txt") ;
+    
+    ifstream myfile (input_file) ;
 
     if (myfile.is_open())
         while ( getline (myfile,line))

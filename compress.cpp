@@ -13,6 +13,7 @@ struct char_freq ;
 struct node ;
 extern vector<node *> char_holder ;
 map<string , char *> code_map;
+extern string input_file ;
 
 void min_heapify(vector<node *> &arr , int size , int i);
 void parrent_heapify(vector<node *> &arr , int size , int i);
@@ -135,7 +136,7 @@ void make_compress_file(){
     string line;
     vector<string> hold_lines ;
 
-    ifstream myfile ("text.txt") ;
+    ifstream myfile (input_file) ;
 
     if (myfile.is_open())
         while (getline (myfile,line))
