@@ -7,9 +7,13 @@
 #include <string.h>
 #include <fstream>
 #include <ostream>
+#include "chilkat/include/CkCrypt2.h"
+#include "chilkat/include/CkGlobal.h"
 using namespace std;
 
-struct char_freq ;
+const char * HASHKEY = "000102030405060708090A0B0C0D0E0F101112131415161718191A1B1C1D1E1F" ;
+        
+struct char_freq ; 
 struct node ;
 extern vector<node *> char_holder ;
 map<string , char *> code_map;
@@ -123,11 +127,17 @@ bool check_the_chars(char c){
 }
 
 void put_header(ofstream &myfile){
+
+    
+    
+    // crypt.put_HashAlgorithm("sha256");
+    // crypt.put_UuMode("666");
+    
     
     map<string , char *>::iterator itr ;
     for(itr = code_map.begin() ; itr != code_map.end() ; itr++)
         myfile << itr->first << " " << itr->second << endl ;
-        
+                
 }
 
 void make_compress_file(){
@@ -144,8 +154,31 @@ void make_compress_file(){
     else
         cout << "Unable to open file"; 
 
+    CkCrypt2 crypt ;
+
+    crypt.put_CryptAlgorithm("eas") ;
+    crypt.put_KeyLength(256);
+    crypt.put_PaddingScheme(0);
+    crypt.SetEncodedKey(HASHKEY,"hex");
+
+    CkGlobal glob;
+    bool success = glob.UnlockBundle("Anything for 30-day trial");
+    if (success != true) {
+        std::cout << glob.lastErrorText() << "\r\n";
+        return;
+    }
+
+    int status = glob.get_UnlockStatus();
+
     myfile.close();
     compress_file.close() ;    
+    string inFile = "/home/amin/Documents/huffman_tree/compressed.txt";
+    string outFile = "/home/amin/Documents/huffman_tree/compressed.txt.en" ;
+
+    success = crypt.CkEncryptFile(&inFile.at(0),&outFile.at(0));
+    if(!success)
+        cout << crypt.lastErrorText() << endl;
+    remove("compressed.txt") ;
 }
 
 void convert_char_to_code(string line , ofstream &file){
@@ -157,3 +190,4 @@ void convert_char_to_code(string line , ofstream &file){
     }
     file << endl ;
 }
+

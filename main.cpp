@@ -49,7 +49,6 @@ int main(int argc , char *argv[]){
     
     double precent = (double)size_of_compressed_file / (double)size_of_total ;
     cout << "precent is : " << precent << endl ;
-
     try{
         decompressed() ;
     }catch(const char *e){
